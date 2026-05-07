@@ -1,0 +1,36 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and settings",
+      "type": "object",
+      "properties": {
+        "mistralApiKeys": {
+          "type": "array",
+          "description": "List of Mistral API keys",
+          "items": {
+            "type": "string"
+          }
+        },
+        "geminiApiKeys": {
+          "type": "array",
+          "description": "List of Gemini API keys",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["mistralApiKeys", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User settings document"
+    }
+  }
+}

@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@1,400;1,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif: "Crimson Pro", serif;
+}
+
+:root {
+  --app-bg: #030406;
+  --surface: rgba(10, 12, 16, 0.6);
+  --surface-accent: rgba(15, 18, 24, 0.8);
+  --accent: #6366f1;
+  --accent-cyan: #06b6d4;
+  --accent-magenta: #d946ef;
+  --accent-lime: #84cc16;
+  --accent-orange: #f97316;
+  --accent-glow: rgba(99, 102, 241, 0.3);
+  --text-dim: #64748b;
+  --text-main: #94a3b8;
+  --text-bright: #f8fafc;
+  --border: rgba(255, 255, 255, 0.08);
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.light {
+  --app-bg: #f8fafc;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-accent: rgba(241, 245, 249, 0.9);
+  --accent: #4338ca;
+  --accent-cyan: #0891b2;
+  --accent-magenta: #be185d;
+  --accent-lime: #4d7c0f;
+  --accent-orange: #c2410c;
+  --accent-glow: rgba(67, 56, 202, 0.1);
+  --text-dim: #64748b;
+  --text-main: #334155;
+  --text-bright: #0f172a;
+  --border: rgba(0, 0, 0, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--app-bg)] text-[var(--text-main)] antialiased selection:bg-[var(--accent)] selection:text-white text-[13px] tracking-tight;
+    font-feature-settings: "cv02", "cv05", "cv11", "ss01";
+  }
+}
+
+@utility glass {
+  @apply bg-white/[0.02] backdrop-blur-3xl border border-white/[0.08] rounded-xl;
+}
+
+@utility card {
+  @apply bg-[var(--surface)] backdrop-blur-2xl border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm;
+}
+
+@utility mesh-bg {
+  @apply fixed inset-0 -z-10 pointer-events-none;
+  background: 
+    linear-gradient(rgba(3, 4, 6, 0.65), rgba(3, 4, 6, 0.8)),
+    url('https://i.postimg.cc/t4J9QKb2/20260501-182631-8-4-300-2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+@utility neon-glow {
+  filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.4));
+}
+
+@utility animate-mesh {
+  @apply fixed inset-0 -z-10 pointer-events-none opacity-50;
+  background: 
+    linear-gradient(rgba(3, 4, 6, 0.55), rgba(3, 4, 6, 0.75)),
+    url('https://i.postimg.cc/t4J9QKb2/20260501-182631-8-4-300-2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  animation: background-drift 120s linear infinite alternate;
+}
+
+@keyframes background-drift {
+  from { background-position: center 48%; }
+  to { background-position: center 52%; }
+}
+
+@utility scanning-line {
+  @apply fixed inset-0 pointer-events-none -z-5 opacity-5;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    rgba(99, 102, 241, 0.1) 50%, 
+    transparent 100%
+  );
+  background-size: 100% 20px;
+  animation: scanning 15s linear infinite;
+}
+
+@keyframes scanning {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
+}
+
+@utility btn-primary {
+  @apply px-5 py-2.5 bg-indigo-600 text-white font-semibold uppercase tracking-[0.15em] text-[10px] rounded-xl hover:bg-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] active:scale-[0.98] transition-all disabled:opacity-30 disabled:pointer-events-none shadow-lg shadow-indigo-950/20;
+}
+
+@utility animate-gradient-x {
+  animation: gradient-x 6s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@utility animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@utility animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@utility hover-glow {
+  @apply transition-all duration-300;
+  &:hover {
+    @apply shadow-[0_0_20px_rgba(99,102,241,0.4)] border-indigo-500/30;
+  }
+}
+
+@utility btn-secondary {
+  @apply px-4 py-2 bg-white/[0.04] border border-white/[0.08] text-[var(--text-bright)] font-semibold uppercase tracking-widest text-[9px] rounded-xl hover:bg-white/[0.08] hover:border-[var(--accent)]/40 active:scale-[0.98] transition-all;
+}
+
+@utility tag {
+  @apply bg-indigo-500/[0.08] border border-indigo-500/20 text-[9px] text-indigo-300 font-bold px-2 py-0.5 rounded uppercase tracking-wider;
+}
+
+@utility input-field {
+  @apply w-full bg-black/[0.2] border border-[var(--border)] rounded-xl px-4 py-3 text-[12px] focus:border-[var(--accent)]/50 focus:bg-black/[0.3] outline-none transition-all placeholder:text-slate-700;
+}
+

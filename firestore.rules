@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Entity validation
+    function isValidUser(data) {
+      return data.keys().hasAll(['mistralApiKeys', 'geminiApiKeys', 'updatedAt']) 
+        && data.keys().size() == 3
+        && data.mistralApiKeys is list
+        && data.mistralApiKeys.size() <= 10
+        && data.geminiApiKeys is list
+        && data.geminiApiKeys.size() <= 10
+        && data.updatedAt == request.time;
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      // No list allowed to prevent PII/ID leakage
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && (
+        (incoming().diff(existing()).affectedKeys().hasOnly(['mistralApiKeys', 'updatedAt']) && isValidUser(incoming())) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['geminiApiKeys', 'updatedAt']) && isValidUser(incoming())) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['mistralApiKeys', 'geminiApiKeys', 'updatedAt']) && isValidUser(incoming()))
+      );
+      allow delete: if false; // Users cannot delete their account data from client currently
+    }
+  }
+}
